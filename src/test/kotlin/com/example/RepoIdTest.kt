@@ -24,7 +24,7 @@ class RepoIdTest(
         val document = documentRepository.findById(documentId).getOrNull()
 
         document shouldNotBe null
-        document!!.startDate.toString() shouldBe date
+        document!!.startDate shouldBe date
     }
 
     "test saving and reading date" {
