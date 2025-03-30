@@ -51,7 +51,7 @@ class RepoIdTest(
     "test Date to LocalDate without calendar check" {
         assertSoftly {
             dates.forEach {
-                val date = dateFormat.parse("${it.first}-${it.second}-${it.third}")
+                val date = dateFormat.parse("${it.first}-${it.second}-${it.third}Z")
                 val expectedDate = LocalDate.of(it.first, it.second, it.third)
                 convertDateToLocalDate(date) shouldBe expectedDate
             }
@@ -61,7 +61,7 @@ class RepoIdTest(
     "test Date to LocalDate with calendar check" {
         assertSoftly {
             dates.forEach {
-                val date = dateFormat.parse("${it.first}-${it.second}-${it.third}")
+                val date = dateFormat.parse("${it.first}-${it.second}-${it.third}Z")
                 val expectedDate = LocalDate.of(it.first, it.second, it.third)
                 convertDateToLocalDateWithCalendar(date) shouldBe expectedDate
             }
@@ -73,7 +73,7 @@ class RepoIdTest(
         //as in java.util.GregorianCalendar.DEFAULT_GREGORIAN_CUTOVER
         val DEFAULT_GREGORIAN_CUTOVER = -12219292800000L
         val MAX_GREGORIAN_CUTOVER = DEFAULT_GREGORIAN_CUTOVER + 14 * ONE_HOUR
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFormat = SimpleDateFormat("yyyy-MM-ddX")
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
         val fullDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 
@@ -84,7 +84,7 @@ class RepoIdTest(
 
         fun convertDateToLocalDateWithCalendar(date: Date): LocalDate {
             if (isGregorian(date.time)) {
-                date.toInstant().atZone(TimeZone.getDefault().toZoneId()).toLocalDate()
+                return date.toInstant().atZone(TimeZone.getDefault().toZoneId()).toLocalDate()
             }
             return LocalDate.from(dateTimeFormatter.parse(fullDateFormat.format(date)))
         }
